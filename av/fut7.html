@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fut7</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./style/header.css">
+</head>
+<body>
+    <header>
+        <h1>Fut7</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Agendar</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Contato</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="quadrado-container">
+            <div class="quadrado">
+                <img src="img/quadra1.jpg" alt="Imagem">
+                <p> Quadra 1</p>
+            </div>
+            <div class="quadrado1">
+                <img src="img/quadra2.jpeg" alt="Imagem">
+                <p>Quadra 2</p>
+            </div>
+            <div class="quadrado2">
+                <img src="img/quadra3.jpg" alt="Imagem">
+                <p>Quadra 3</p>
+            </div>
+          </div>
+        <section id="agendamento">
+            <h2>Agendar Quadra</h2>
+            <form id="form-agendamento">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+                <label for="quadra">Quadra:</label>
+                <input type="int" id="quadra" name="quadra" required>
+                <label for="horario">Horário:</label>
+                <input type="time" id="horario" name="horario" required>
+                <button type="submit">Agendar</button>
+            </form>
+        </section>
+        <section id="calendario">
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Agendamento de Quadra - Fut7</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
