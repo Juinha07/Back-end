@@ -1,7 +1,7 @@
 .quadrado {
     width: 400px;
     height: 400px;
-    background-color: #333;
+    background-color: #d11097;
     justify-content: center;
     padding: 30px;
     text-align: center;
@@ -19,7 +19,7 @@
 .quadrado1 {
     width: 400px;
     height: 400px;
-    background-color: #333;
+    background-color: #18e4eb;
     justify-content: center;
     padding: 30px;
     text-align: center;
@@ -38,7 +38,7 @@
 .quadrado2 {
     width: 400px;
     height: 400px;
-    background-color: #333;
+    background-color: #df0808;
     justify-content: center;
     padding: 30px;
     text-align: center;

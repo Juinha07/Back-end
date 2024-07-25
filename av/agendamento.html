@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento</title>
+    <link rel="stylesheet" href="balaomagico.html">
+    <link rel="stylesheet" href="styles.css">
+   
+</head>
+<body>
+    <header>
+        <h1>Balão Mágico</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="balaomagico.html">Início</a></li>
+            <li><a href="agendamento.html">Agendar</a></li>
+            <li><a href="#">Sobre</a></li>
+            <li><a href="#">Contato</a></li>
+            <li><a href="index.html">Login</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="agendamento">
+            <h2>Agendar Brinquedo</h2>
+            <form id="form-agendamento">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+                <label for="quadra">Brinquedo:</label>
+                <input type="int" id="brinquedo" name="brinquedo" required>
+                <label for="horario">Horário de início:</label>
+                <input type="time" id="horarioi" name="horarioi" required>
+                <label for="horario">Horário final:</label>
+                <input type="time" id="horariof" name="horariof" required>
+                <button type="submit">Agendar</button>
+            </form>
+        </section>
+        <section id="calendario">
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Agendamento de Brinquedos - Balão Mágico</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
