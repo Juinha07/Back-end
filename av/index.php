@@ -1,6 +1,6 @@
 <?php
-session_start(); 
-include 'conexao.php'; 
+session_start();
+include 'conexao.php';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -10,6 +10,25 @@ include 'conexao.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Conta</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .show-password {
+            position: absolute;
+            right: 10px;
+            top: 70%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -53,10 +72,15 @@ include 'conexao.php';
                     if ($resultado && $resultado->num_rows > 0) {
                         $agendamento = $resultado->fetch_assoc();
                         echo "<h2>Seu Agendamento</h2>";
+                        echo "<br>";
                         echo "<p>Data do Agendamento: " . htmlspecialchars($agendamento['dataAgendamento']) . "</p>";
+                        echo "<br>";
                         echo "<p>Hora de Início: " . htmlspecialchars($agendamento['horaInicio']) . "</p>";
+                        echo "<br>";
                         echo "<p>Hora de Término: " . htmlspecialchars($agendamento['horaFinal']) . "</p>";
+                        echo "<br>";
                         echo "<p>Valor do Brinquedo: R$ " . htmlspecialchars($agendamento['valor']) . "</p>";
+                        echo "<br>";
                         echo "<p>Endereço: " . htmlspecialchars($agendamento['rua']) . ", " . htmlspecialchars($agendamento['numero']) . " - " . htmlspecialchars($agendamento['bairro']) . ", " . htmlspecialchars($agendamento['cidade']) . "</p>";
 
                         if (isset($agendamento['codAgendamento'])) {
@@ -81,6 +105,11 @@ include 'conexao.php';
                     echo "Erro na preparação da consulta: " . $conn->error;
                 }
             } else {
+                if (isset($_SESSION['login_error'])) {
+                    echo "<p class='error'>" . htmlspecialchars($_SESSION['login_error']) . "</p>";
+                    unset($_SESSION['login_error']);
+                }
+
                 echo '
                 <form action="login.php" method="POST">
                     <fieldset>
@@ -88,9 +117,10 @@ include 'conexao.php';
                             <label for="email" class="labelInput">Email</label>
                             <input type="text" name="email" id="email" class="inputUser" required>
                         </div>
-                        <div class="inputBox">
+                        <div class="inputBox" style="position: relative;">
                             <label for="senha" class="labelInput">Senha</label>
                             <input type="password" name="senha" id="senha" class="inputUser" required>
+                            <span class="show-password" onclick="togglePassword()">👁️</span>
                         </div>
                         <p class="signup">Você não tem uma conta?
                             <a href="cadastro.html">Crie já</a>
@@ -105,5 +135,13 @@ include 'conexao.php';
             ?>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const senhaInput = document.getElementById('senha');
+            const passwordType = senhaInput.type === 'password' ? 'text' : 'password';
+            senhaInput.type = passwordType;
+        }
+    </script>
 </body>
 </html>

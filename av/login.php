@@ -1,30 +1,31 @@
 <?php
-session_start(); 
-
+session_start();
 include 'conexao.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['email']) && isset($_POST['senha']) && !empty($_POST['email']) && !empty($_POST['senha'])) {
-        $email = $_POST['email'];
-        $senha = $_POST['senha'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
 
-        $sql = "SELECT codCliente FROM cliente WHERE email = '$email' AND senha = '$senha'";
-        $result = $conn->query($sql);
+    // Preparar e executar a consulta
+    $query = "SELECT codCliente FROM cliente WHERE email = ? AND senha = ?";
+    if ($stmt = $conn->prepare($query)) {
+        $stmt->bind_param('ss', $email, $senha);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $_SESSION['codCliente'] = $row['codCliente'];
-            header("location: index.php"); 
-            exit();
+        if ($resultado && $resultado->num_rows > 0) {
+            $_SESSION['codCliente'] = $resultado->fetch_assoc()['codCliente'];
+            header('Location: index.php');
         } else {
-            echo "Email ou senha inválido";
+            $_SESSION['login_error'] = 'Email ou senha inválido';
+            header('Location: index.php');
         }
-    } else {
-        echo "Por favor, preencha todos os campos.";
-    }
-}
 
-if ($conn) {
+        $stmt->close();
+    } else {
+        echo "Erro na preparação da consulta: " . $conn->error;
+    }
+
     $conn->close();
 }
 ?>
