@@ -6,7 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    // Preparar e executar a consulta
     $query = "SELECT codCliente FROM cliente WHERE email = ? AND senha = ?";
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param('ss', $email, $senha);
