@@ -1,0 +1,93 @@
+.quadrado {
+    width: 400px;
+    height: 400px;
+    background-color: #d11097;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    border-radius: 15px;
+}
+.quadrado img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    justify-content: center;
+    border-radius: 15px;
+}
+.quadrado p {
+    font-size: 25px;
+    color: #ffffff;
+}
+.quadrado p2 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado p3 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado1 {
+    width: 400px;
+    height: 400px;
+    background-color: #18e4eb;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    border-radius: 15px;
+}
+.quadrado1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    justify-content: center;
+    border-radius: 15px;
+}
+.quadrado1 p {
+    font-size: 25px;
+    color: #fff;
+}
+.quadrado1 p2 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado1 p3 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado2 {
+    width: 400px;
+    height: 400px;
+    background-color: #df0808;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    border-radius: 15px;
+}
+.quadrado2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    justify-content: center;
+    border-radius: 15px;
+}
+.quadrado2 p {
+    font-size: 25px;
+    color: #fff;
+}
+.quadrado2 p2 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado2 p3 {
+    font-size: 20px;
+    color: #000000;
+}
+.quadrado-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
