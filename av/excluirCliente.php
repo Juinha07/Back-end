@@ -2,7 +2,6 @@
 session_start(); 
 include 'conexao.php'; 
 
-// Verifica se o usuário está logado como administrador
 if (!isset($_SESSION['email']) || $_SESSION['email'] !== 'adm@gmail.com') {
     header('Location: login.php'); 
     exit();

@@ -63,6 +63,9 @@ $resultadoAgendamentos = $conn->query($queryAgendamentos);
                     <br>
                 <?php endwhile; ?>
             </ul>
+            <div class='actions'>
+                <a href='adicionarBrinquedo.php' class='adicionar-btn'>Adicionar Brinquedo</a>
+            </div><br>
 
             <h2>Clientes</h2><br>
             <ul>
@@ -77,6 +80,10 @@ $resultadoAgendamentos = $conn->query($queryAgendamentos);
                     <br>
                 <?php endwhile; ?>
             </ul>
+            
+            <div class='actions'>
+                <a href='adicionarCliente.php' class='adicionar-btn'>Adicionar Cliente</a>
+            </div><br>
 
             <h2>Agendamentos</h2><br>
             <ul>
@@ -99,6 +106,9 @@ $resultadoAgendamentos = $conn->query($queryAgendamentos);
                     <br>
                 <?php endwhile; ?>
             </ul>
+            <div class='actions'>
+                <a href='adicionarAgendamento.php' class='adicionar-btn'>Adicionar Agendamento</a>
+            </div><br>
         </div>
     </div>
 </body>

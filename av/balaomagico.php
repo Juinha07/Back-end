@@ -43,9 +43,10 @@ $result = $conn->query($sql);
                 while($row = $result->fetch_assoc()) {
                     echo '<div class="quadrado">';
                     echo '<img src="img/' . htmlspecialchars($row['imagem']) . '" alt="' . htmlspecialchars($row['nome']) . '">';
-                    echo '<p><b>' . htmlspecialchars($row['nome']) . ' - ' . htmlspecialchars($row['codBrinquedo']) . '</b></p><br>';
+                    echo '<p><b>' . htmlspecialchars($row['nome']) . '</b></p><br>'; 
                     echo '<p2>Valor: <b>' . number_format($row['valor'], 2, ',', '.') . '</b></p2><br>';
-                    echo '<p2>' . htmlspecialchars($row['descricao']) . '</p2>';
+                    
+                    echo '<p2>' . nl2br(htmlspecialchars($row['descricao'])) . '</p2>';
                     echo '</div>';
                 }
             } else {

@@ -1,24 +1,25 @@
 <?php
 session_start();
 include 'conexao.php';
+
 $is_admin = isset($_SESSION['admin_id']);
+
+$queryBrinquedos = "SELECT codBrinquedo, nome FROM brinquedos";
+$resultadoBrinquedos = $conn->query($queryBrinquedos);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento</title>
-    <link rel="stylesheet" href="balaomagico.html">
     <link rel="stylesheet" href="styles.css">
-
-   
 </head>
 <body>
     <header>
-        <img src="img/logotipo.png">
+        <img src="img/logotipo.png" alt="Logotipo Balão Mágico">
     </header>
     <nav>
         <ul>
@@ -38,28 +39,36 @@ $is_admin = isset($_SESSION['admin_id']);
     <main>
         <div class="container">
             <div class="box">
-        <h2>Agendar Brinquedo</h2><br>
-        <div class="agendamento">
-            <form action="agendar.php" method="post">
-                <div class="inputBox">
-                    <label for="codBrinquedo" class="labelInput">Código do Brinquedo:</label>
-                    <input type="text" name="codBrinquedo" id="codBrinquedo" class="inputUser" placeholder="Código do Brinquedo" required><br>
-                    
-                    <br>
-                    <label for="dataAgendamento" class="labelInput">Data do Agendamento:</label>
-                    <input type="date" name="dataAgendamento" id="dataAgendamento" class="inputUser" placeholder="Data" required><br>
-                    
-                    <br>
-                    <label for="horaInicio" class="labelInput">Hora de Início:</label>
-                    <input type="time" name="horaInicio" id="horaInicio" class="inputUser" placeholder="Hora de Início" required><br>
-                    
-                    <br>
-                    <label for="horaFinal" class="labelInput">Hora de Término:</label>
-                    <input type="time" name="horaFinal" id="horaFinal" class="inputUser" placeholder="Hora de Término" required><br>
+                <h2>Agendar Brinquedo</h2><br>
+                <div class="agendamento">
+                    <form action="agendar.php" method="post">
+                        <div class="inputBox">
+                            <label for="codBrinquedo">Selecione o Brinquedo:</label>
+                            <select name="codBrinquedo" id="codBrinquedo" class="inputUser" required>
+                                <?php while ($row = $resultadoBrinquedos->fetch_assoc()): ?>
+                                    <option value="<?php echo $row['codBrinquedo']; ?>">
+                                        <?php echo htmlspecialchars($row['nome']); ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select><br>
+                            
+                            <label for="dataAgendamento" class="labelInput">Data do Agendamento:</label>
+                            <input type="date" name="dataAgendamento" id="dataAgendamento" class="inputUser" required><br>
+                            
+                            <label for="horaInicio" class="labelInput">Hora de Início:</label>
+                            <input type="time" name="horaInicio" id="horaInicio" class="inputUser" required><br>
+                            
+                            <label for="horaFinal" class="labelInput">Hora de Término:</label>
+                            <input type="time" name="horaFinal" id="horaFinal" class="inputUser" required><br>
+
+                            <?php if ($is_admin): ?>
+                                <label for="codCliente" class="labelInput">Código do Cliente:</label>
+                                <input type="text" name="codCliente" id="codCliente" class="inputUser" placeholder="Código do Cliente" required><br>
+                            <?php endif; ?>
+                        </div>
+                        <input type="submit" name="submit" id="submit" value="Agendar">
+                    </form>
                 </div>
-                <input type="submit" name="submit" id="submit" value="Agendar">
-            </form>
-        </div>
             </div>
         </div>
         <section id="calendario">
@@ -67,3 +76,7 @@ $is_admin = isset($_SESSION['admin_id']);
     </main>
 </body>
 </html>
+
+<?php
+$conn->close();
+?>

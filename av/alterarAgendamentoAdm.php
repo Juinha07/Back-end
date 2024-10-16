@@ -2,7 +2,6 @@
 session_start(); 
 include 'conexao.php'; 
 
-// Verifica se o usuário está logado como administrador
 if (!isset($_SESSION['email']) || $_SESSION['email'] !== 'adm@gmail.com') {
     header('Location: login.php'); 
     exit();
@@ -27,6 +26,12 @@ if (isset($_GET['codAgendamento'])) {
     echo "Código do agendamento não especificado.";
     exit();
 }
+
+$queryBrinquedos = "SELECT codBrinquedo, nome FROM brinquedos";
+$resultadoBrinquedos = $conn->query($queryBrinquedos);
+
+$queryClientes = "SELECT codCliente, nome FROM cliente";
+$resultadoClientes = $conn->query($queryClientes);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dataAgendamento = $_POST['dataAgendamento'] ?? '';
@@ -82,19 +87,31 @@ $conn->close();
             <form action="" method="POST">
                 <label for="dataAgendamento">Data do Agendamento:</label>
                 <input type="date" name="dataAgendamento" id="dataAgendamento" class="inputUser" value="<?php echo htmlspecialchars($agendamento['dataAgendamento'] ?? ''); ?>" required><br>
-                
+
                 <label for="horaInicio">Hora de Início:</label>
                 <input type="time" name="horaInicio" id="horaInicio" class="inputUser" value="<?php echo htmlspecialchars($agendamento['horaInicio'] ?? ''); ?>" required><br>
-                
+
                 <label for="horaFinal">Hora de Término:</label>
                 <input type="time" name="horaFinal" id="horaFinal" class="inputUser" value="<?php echo htmlspecialchars($agendamento['horaFinal'] ?? ''); ?>" required><br>
-                
-                <label for="codBrinquedo">Código do Brinquedo:</label>
-                <input type="text" name="codBrinquedo" id="codBrinquedo" class="inputUser" value="<?php echo htmlspecialchars($agendamento['codBrinquedo'] ?? ''); ?>" required><br>
-                
-                <label for="codCliente">Código do Cliente:</label>
-                <input type="text" name="codCliente" id="codCliente" class="inputUser" value="<?php echo htmlspecialchars($agendamento['codCliente'] ?? ''); ?>" required><br>
-                
+
+                <label for="codBrinquedo">Selecione o Brinquedo:</label>
+                <select name="codBrinquedo" id="codBrinquedo" class="inputUser" required>
+                    <?php while ($row = $resultadoBrinquedos->fetch_assoc()): ?>
+                        <option value="<?php echo $row['codBrinquedo']; ?>" <?php echo ($row['codBrinquedo'] == $agendamento['codBrinquedo']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($row['nome']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select><br>
+
+                <label for="codCliente">Selecione o Cliente:</label>
+                <select name="codCliente" id="codCliente" class="inputUser" required>
+                    <?php while ($row = $resultadoClientes->fetch_assoc()): ?>
+                        <option value="<?php echo $row['codCliente']; ?>" <?php echo ($row['codCliente'] == $agendamento['codCliente']) ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($row['nome']) . ' (Código: ' . $row['codCliente'] . ')'; ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select><br>
+
                 <input type="submit" name="submit" id="submit" value="Alterar Agendamento">
             </form>
         </div>

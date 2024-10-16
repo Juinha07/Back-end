@@ -2,28 +2,33 @@
 session_start(); 
 include 'conexao.php'; 
 
-// Verifica se o usuário está logado como administrador
 if (!isset($_SESSION['email']) || $_SESSION['email'] !== 'adm@gmail.com') {
     header('Location: login.php'); 
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $cpf = $_POST['cpf'] ?? '';
     $nome = $_POST['nome'] ?? '';
     $email = $_POST['email'] ?? '';
+    $senha = $_POST['senha'] ?? '';
     $telefone = $_POST['telefone'] ?? '';
+    $dataNascimento = $_POST['dataNascimento'] ?? '';
     $rua = $_POST['rua'] ?? '';
     $numero = $_POST['numero'] ?? '';
     $bairro = $_POST['bairro'] ?? '';
     $cidade = $_POST['cidade'] ?? '';
 
-    $query = "INSERT INTO cliente (nome, email, telefone, rua, numero, bairro, cidade) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO cliente (cpf, nome, email, senha, telefone, dataNascimento, rua, numero, bairro, cidade) 
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
+
     if ($stmt === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
 
-    $stmt->bind_param('sssssss', $nome, $email, $telefone, $rua, $numero, $bairro, $cidade);
+    $stmt->bind_param('ssssssssss', $cpf, $nome, $email, $senha, $telefone, $dataNascimento, $rua, $numero, $bairro, $cidade);
+
     if ($stmt->execute()) {
         header("Location: admin.php"); 
         exit();
@@ -61,28 +66,37 @@ $conn->close();
     <div class="container">
         <div class="box">
             <h2>Adicionar Cliente</h2>
-            <form action="admin.php" method="POST">
+            <form action="adicionarCliente.php" method="POST">
+                <label for="cpf">CPF:</label>
+                <input type="text" name="cpf" id="cpf" class="inputUser" required><br>
+                
                 <label for="nome">Nome:</label>
                 <input type="text" name="nome" id="nome" class="inputUser" required><br>
-                
+
                 <label for="email">Email:</label>
                 <input type="email" name="email" id="email" class="inputUser" required><br>
+
+                <label for="senha">Senha:</label>
+                <input type="password" name="senha" id="senha" class="inputUser" required><br>
                 
                 <label for="telefone">Telefone:</label>
                 <input type="text" name="telefone" id="telefone" class="inputUser" required><br>
-                
+
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" name="dataNascimento" id="dataNascimento" class="inputUser" required><br>
+
                 <label for="rua">Rua:</label>
                 <input type="text" name="rua" id="rua" class="inputUser" required><br>
-                
+
                 <label for="numero">Número:</label>
                 <input type="text" name="numero" id="numero" class="inputUser" required><br>
-                
+
                 <label for="bairro">Bairro:</label>
                 <input type="text" name="bairro" id="bairro" class="inputUser" required><br>
-                
+
                 <label for="cidade">Cidade:</label>
                 <input type="text" name="cidade" id="cidade" class="inputUser" required><br>
-                
+
                 <input type="submit" name="submit" id="submit" value="Adicionar Cliente">
             </form>
         </div>

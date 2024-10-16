@@ -14,7 +14,10 @@ if (!isset($_SESSION['codCliente'])) {
 if (isset($_GET['codAgendamento'])) {
     $codAgendamento = $_GET['codAgendamento'];
 
-    $query = "SELECT a.*, c.rua, c.numero, c.bairro, c.cidade FROM agendamentos a JOIN cliente c ON a.codCliente = c.codCliente WHERE a.codAgendamento = ?";
+    $query = "SELECT a.*, c.rua, c.numero, c.bairro, c.cidade 
+              FROM agendamentos a 
+              JOIN cliente c ON a.codCliente = c.codCliente 
+              WHERE a.codAgendamento = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
         die('Prepare failed: ' . htmlspecialchars($conn->error));
@@ -36,6 +39,9 @@ if (isset($_GET['codAgendamento'])) {
     echo "Código do agendamento não especificado.";
     exit();
 }
+
+$queryBrinquedos = "SELECT codBrinquedo, nome FROM brinquedos";
+$resultadoBrinquedos = $conn->query($queryBrinquedos);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $novaData = $_POST['dataAgendamento'] ?? '';
@@ -114,8 +120,14 @@ $conn->close();
             <h2>Alterar Agendamento</h2>
             <form action="" method="POST">
                 <div class="inputBox">
-                    <label for="codBrinquedo">Código do Brinquedo:</label>
-                    <input type="text" name="codBrinquedo" id="codBrinquedo" class="inputUser" value="<?php echo htmlspecialchars($agendamento['codBrinquedo'] ?? ''); ?>" required><br>
+                    <label for="codBrinquedo">Selecione o Brinquedo:</label>
+                    <select name="codBrinquedo" id="codBrinquedo" class="inputUser" required>
+                        <?php while ($row = $resultadoBrinquedos->fetch_assoc()): ?>
+                            <option value="<?php echo $row['codBrinquedo']; ?>" <?php if ($row['codBrinquedo'] == $agendamento['codBrinquedo']) echo 'selected'; ?>>
+                                <?php echo htmlspecialchars($row['nome']); ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select><br>
 
                     <label for="dataAgendamento">Data do Agendamento:</label>
                     <input type="date" name="dataAgendamento" id="dataAgendamento" class="inputUser" value="<?php echo htmlspecialchars($agendamento['dataAgendamento'] ?? ''); ?>" required><br>

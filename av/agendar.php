@@ -1,43 +1,58 @@
 <?php
-session_start();  
-
+session_start();
 include 'conexao.php';
 
-if (isset($_SESSION['codCliente'])) {
+if (!isset($_SESSION['codCliente'])) {
+    header('Location: index.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $codBrinquedo = $_POST['codBrinquedo'];
+    $dataAgendamento = $_POST['dataAgendamento'];
+    $horaInicio = $_POST['horaInicio'];
+    $horaFinal = $_POST['horaFinal'];
     $codCliente = $_SESSION['codCliente'];
 
-    if (isset($_POST['codBrinquedo'], $_POST['dataAgendamento'], $_POST['horaInicio'], $_POST['horaFinal'])) {
-        $codBrinquedo = $_POST['codBrinquedo'];
-        $dataAgendamento = $_POST['dataAgendamento'];
-        $horaInicio = $_POST['horaInicio'];
-        $horaFinal = $_POST['horaFinal'];
+    $queryVerificarConflito = "
+        SELECT * FROM agendamentos 
+        WHERE codBrinquedo = ? 
+        AND dataAgendamento = ?
+        AND ((horaInicio <= ? AND horaFinal > ?) OR (horaInicio < ? AND horaFinal >= ?))";
 
-        $sqlVerificacao = "SELECT * FROM agendamentos 
-                           WHERE codBrinquedo = '$codBrinquedo' 
-                           AND dataAgendamento = '$dataAgendamento' 
-                           AND ('$horaInicio' < horaFinal AND '$horaFinal' > horaInicio)";
-
-        $result = $conn->query($sqlVerificacao);
-
-        if ($result->num_rows > 0) {
-            echo "O brinquedo já está reservado para este período. Por favor, escolha outra data ou horário.";
-        } else {
-            $sqlInserir = "INSERT INTO agendamentos (codCliente, codBrinquedo, dataAgendamento, horaInicio, horaFinal) 
-                           VALUES ('$codCliente', '$codBrinquedo', '$dataAgendamento', '$horaInicio', '$horaFinal')";
-
-            if ($conn->query($sqlInserir) === TRUE) {
-                echo "Agendamento realizado com sucesso!";
-                header("Location: index.php");
-                exit;
-            } else {
-                echo "Erro ao realizar o agendamento: " . $conn->error;
-            }
-        }
-    } else {
-        echo "Por favor, preencha todos os campos.";
+    $stmtVerificar = $conn->prepare($queryVerificarConflito);
+    if ($stmtVerificar === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
     }
-} else {
-    header("Location: index.php");
+
+    $stmtVerificar->bind_param('isssss', $codBrinquedo, $dataAgendamento, $horaFinal, $horaInicio, $horaInicio, $horaFinal);
+    $stmtVerificar->execute();
+    $resultVerificar = $stmtVerificar->get_result();
+
+    if ($resultVerificar->num_rows > 0) {
+        echo "Já existe um agendamento para este brinquedo no horário selecionado. Por favor, escolha outro horário.";
+        exit();
+    }
+
+    $stmtVerificar->close();
+
+    $query = "INSERT INTO agendamentos (codBrinquedo, dataAgendamento, horaInicio, horaFinal, codCliente) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+
+    if ($stmt === false) {
+        die('Prepare failed: ' . htmlspecialchars($conn->error));
+    }
+
+    $stmt->bind_param('ssssi', $codBrinquedo, $dataAgendamento, $horaInicio, $horaFinal, $codCliente);
+
+    if ($stmt->execute()) {
+        header("Location: index.php");
+        exit();
+    } else {
+        echo "Erro ao agendar: " . htmlspecialchars($stmt->error);
+    }
+
+    $stmt->close();
 }
 
 $conn->close();

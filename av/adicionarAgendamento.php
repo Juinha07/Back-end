@@ -1,12 +1,17 @@
 <?php
-session_start(); 
-include 'conexao.php'; 
+session_start();
+include 'conexao.php';
 
-// Verifica se o usuário está logado como administrador
-if (!isset($_SESSION['email']) || $_SESSION['email'] !== 'adm@gmail.com') {
-    header('Location: login.php'); 
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: login.php');
     exit();
 }
+
+$queryBrinquedos = "SELECT codBrinquedo, nome FROM brinquedos";
+$resultadoBrinquedos = $conn->query($queryBrinquedos);
+
+$queryClientes = "SELECT codCliente, nome FROM cliente";
+$resultadoClientes = $conn->query($queryClientes);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dataAgendamento = $_POST['dataAgendamento'] ?? '';
@@ -15,20 +20,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $codBrinquedo = $_POST['codBrinquedo'] ?? '';
     $codCliente = $_POST['codCliente'] ?? '';
 
-    $query = "INSERT INTO agendamentos (dataAgendamento, horaInicio, horaFinal, codBrinquedo, codCliente) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($query);
-    if ($stmt === false) {
-        die('Prepare failed: ' . htmlspecialchars($conn->error));
-    }
-
-    $stmt->bind_param('ssssi', $dataAgendamento, $horaInicio, $horaFinal, $codBrinquedo, $codCliente);
-    if ($stmt->execute()) {
-        header("Location: admin.php"); 
-        exit();
+    if (!ctype_digit($codCliente)) {
+        echo "Código do cliente inválido. Por favor, insira um número inteiro.";
     } else {
-        echo "Erro ao adicionar agendamento: " . htmlspecialchars($stmt->error);
+        $query = "INSERT INTO agendamentos (dataAgendamento, horaInicio, horaFinal, codBrinquedo, codCliente) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
+
+        if ($stmt === false) {
+            die('Prepare failed: ' . htmlspecialchars($conn->error));
+        }
+
+        $stmt->bind_param('ssssi', $dataAgendamento, $horaInicio, $horaFinal, $codBrinquedo, $codCliente);
+
+        if ($stmt->execute()) {
+            header("Location: admin.php");
+            exit();
+        } else {
+            echo "Erro ao adicionar agendamento: " . htmlspecialchars($stmt->error);
+        }
+        $stmt->close();
     }
-    $stmt->close();
 }
 
 $conn->close();
@@ -52,29 +63,41 @@ $conn->close();
             <li><a href="agendamento.php">Agendar</a></li>
             <li><a href="sobre.php">Sobre</a></li>
             <li><a href="contato.php">Contato</a></li>
-            <li><a href="index.php">Minha Conta</a></li>
             <li><a href="logout.php">Sair</a></li>
         </ul>
     </nav>
+
     <div class="container">
         <div class="box">
             <h2>Adicionar Agendamento</h2>
-            <form action="admin.php" method="POST">
+            <form action="adicionarAgendamento.php" method="POST">
                 <label for="dataAgendamento">Data do Agendamento:</label>
                 <input type="date" name="dataAgendamento" id="dataAgendamento" class="inputUser" required><br>
-                
+
                 <label for="horaInicio">Hora de Início:</label>
                 <input type="time" name="horaInicio" id="horaInicio" class="inputUser" required><br>
-                
+
                 <label for="horaFinal">Hora de Término:</label>
                 <input type="time" name="horaFinal" id="horaFinal" class="inputUser" required><br>
-                
-                <label for="codBrinquedo">Código do Brinquedo:</label>
-                <input type="text" name="codBrinquedo" id="codBrinquedo" class="inputUser" required><br>
-                
-                <label for="codCliente">Código do Cliente:</label>
-                <input type="text" name="codCliente" id="codCliente" class="inputUser" required><br>
-                
+
+                <label for="codBrinquedo">Selecione o Brinquedo:</label>
+                <select name="codBrinquedo" id="codBrinquedo" class="inputUser" required>
+                    <?php while ($row = $resultadoBrinquedos->fetch_assoc()): ?>
+                        <option value="<?php echo $row['codBrinquedo']; ?>">
+                            <?php echo htmlspecialchars($row['nome']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select><br>
+
+                <label for="codCliente">Selecione o Cliente:</label>
+                <select name="codCliente" id="codCliente" class="inputUser" required>
+                    <?php while ($row = $resultadoClientes->fetch_assoc()): ?>
+                        <option value="<?php echo $row['codCliente']; ?>">
+                            <?php echo htmlspecialchars($row['nome']) . ' (Código: ' . $row['codCliente'] . ')'; ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select><br>
+
                 <input type="submit" name="submit" id="submit" value="Adicionar Agendamento">
             </form>
         </div>

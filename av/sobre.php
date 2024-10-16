@@ -2,9 +2,7 @@
 session_start();
 include 'conexao.php';
 
-// Verifica se o usuário está logado como administrador
 if (isset($_SESSION['admin_id'])) {
-    // O administrador está logado
     $is_admin = true;
 } else {
     $is_admin = false;

@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    // Verificar se é um administrador
     $queryAdmin = "SELECT id FROM administradores WHERE email = ? AND senha = ?";
     if ($stmt = $conn->prepare($queryAdmin)) {
         $stmt->bind_param('ss', $email, $senha);
@@ -17,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($resultadoAdmin && $resultadoAdmin->num_rows > 0) {
             $_SESSION['admin_id'] = $resultadoAdmin->fetch_assoc()['id'];
-            $_SESSION['email'] = $email; // Armazena o e-mail na sessão
-            $_SESSION['senha'] = $senha; // Armazena a senha na sessão
+            $_SESSION['email'] = $email; 
+            $_SESSION['senha'] = $senha; 
             header('Location: admin.php');
             exit;
         }
@@ -26,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
     }
 
-    // Verificar se é um cliente
     $queryCliente = "SELECT codCliente FROM cliente WHERE email = ? AND senha = ?";
     if ($stmt = $conn->prepare($queryCliente)) {
         $stmt->bind_param('ss', $email, $senha);
